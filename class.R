@@ -66,6 +66,28 @@ Analysis <- R6Class("Analysis",
                           private$.cluster <- kmeans_cluster
                           private$invalidate()
                         }
+                      },
+
+                      get_data = function(type) {
+                        if (type == "dimension_reduction") {
+                          return(private$.dimension_reduction)
+                        } else if (type == "dimension_reduction_type") {
+                          return(private$.dimension_reduction_type)
+                        } else if (type == "cluster") {
+                          return(private$.cluster)
+                        } else if (type == "cluster_count") {
+                          return(private$.cluster_count)
+                        }
+                      },
+
+                      print = function(...) {
+                        cat ("Analysis class\n")
+                        if (!is.null(self$raw_data)) {
+                          cat ("Processed dataset:", ncol(self$raw_data), "columns,", nrow(self$raw_data), "rows\n")
+                        } else {
+                          cat ("No data imported\n")
+                        }
+                        invisible(self)
                       }
 
 
