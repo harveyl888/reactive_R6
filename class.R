@@ -10,6 +10,7 @@ Analysis <- R6Class("Analysis",
                     public = list(
 
                       raw_data = NULL,
+                      processed_data = NULL,
 
                       initialize = function(data = NULL) {
                         private$reactiveDep <- function(x) NULL
@@ -31,6 +32,9 @@ Analysis <- R6Class("Analysis",
                       import = function(data) {
                         if (!is.null(data)) {
                           self$raw_data <- as_tibble(data)
+                          column_classes <- lapply(data, class)
+                          numeric_columns <- which(column_classes == "numeric")
+                          self$processed_data <- self$raw_data[, numeric_columns]
                         }
                       }
 
