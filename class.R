@@ -68,11 +68,19 @@ Analysis <- R6Class("Analysis",
                         }
                       },
 
+                      # set number of clusters
+                      set_clusters = function(n = 3) {
+                        private$.cluster_count <- n
+                        private$invalidate()
+                      },
+
                       get_data = function(type) {
                         if (type == "dimension_reduction") {
                           return(private$.dimension_reduction)
                         } else if (type == "dimension_reduction_type") {
                           return(private$.dimension_reduction_type)
+                        } else if (type == "coords") {
+                          return(private$.coords)
                         } else if (type == "cluster") {
                           return(private$.cluster)
                         } else if (type == "cluster_count") {
