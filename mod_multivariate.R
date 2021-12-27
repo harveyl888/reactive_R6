@@ -1,6 +1,9 @@
 multivariate_ui <- function(id) {
   ns <- NS(id)
-  uiOutput(ns("multivariate_ui"))
+  fluidRow(
+    column(6, plotOutput(ns("plt_screeplot"))),
+    column(6, plotOutput(ns("plt_varplot")))
+  )
 }
 
 multivariate <- function(id, analysis = NULL) {
@@ -10,15 +13,6 @@ multivariate <- function(id, analysis = NULL) {
     function(input, output, session) {
 
       ns <- session$ns
-
-      output$multivariate_ui <- renderUI({
-        tagList(
-          fluidRow(
-            column(6, plotOutput(ns("plt_screeplot"))),
-            column(6, plotOutput(ns("plt_varplot")))
-          )
-        )
-      })
 
       ## return multivariate analysis
       pca <- reactive({

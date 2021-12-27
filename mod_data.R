@@ -1,6 +1,8 @@
 data_ui <- function(id) {
   ns <- NS(id)
-  uiOutput(ns("data_ui"))
+  fluidRow(
+    column(12, DTOutput(ns("tab_data")))
+  )
 }
 
 data <- function(id, analysis = NULL) {
@@ -10,14 +12,6 @@ data <- function(id, analysis = NULL) {
     function(input, output, session) {
 
       ns <- session$ns
-
-      output$data_ui <- renderUI({
-        tagList(
-          fluidRow(
-            column(12, DTOutput(ns("tab_data")))
-          )
-        )
-      })
 
       ## table of data
       output$tab_data <- renderDT({

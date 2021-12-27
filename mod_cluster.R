@@ -1,6 +1,15 @@
 cluster_ui <- function(id) {
   ns <- NS(id)
-  uiOutput(ns("cluster_ui"))
+  tagList(
+    fluidRow(
+      column(6, uiOutput(ns("cluster_num_ui")))
+    ),
+    hr(),
+    fluidRow(
+      column(6, plotOutput(ns("plt_optimal_clusters"))),
+      column(6, plotOutput(ns("plt_clusters")))
+    )
+  )
 }
 
 cluster <- function(id, analysis = NULL) {
@@ -11,17 +20,8 @@ cluster <- function(id, analysis = NULL) {
 
       ns <- session$ns
 
-      output$cluster_ui <- renderUI({
-        tagList(
-          fluidRow(
-            column(6, numericInput(ns("num_clusters"), "Number of Clusters", value = analysis()$get_data("cluster_count"), min = 1)),
-          ),
-          hr(),
-          fluidRow(
-            column(6, plotOutput(ns("plt_optimal_clusters"))),
-            column(6, plotOutput(ns("plt_clusters")))
-          )
-        )
+      output$cluster_num_ui <- renderUI({
+        numericInput(ns("num_clusters"), "Number of Clusters", value = analysis()$get_data("cluster_count"), min = 1)
       })
 
       ## get clusters from class
