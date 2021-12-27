@@ -2,6 +2,7 @@ library(R6)
 library(shiny)
 library(dplyr)
 library(FactoMineR)
+library(factoextra)
 
 ## reactive R6 class taken from
 ## https://community.rstudio.com/t/good-way-to-create-a-reactive-aware-r6-class/84890
@@ -11,7 +12,7 @@ Analysis <- R6Class("Analysis",
                     public = list(
 
                       raw_data = NULL,
-                      processed_data = NULL,
+                      filtered_data = NULL,
 
                       initialize = function(data = NULL) {
                         private$reactiveDep <- function(x) NULL
@@ -33,9 +34,15 @@ Analysis <- R6Class("Analysis",
                       import = function(data) {
                         if (!is.null(data)) {
                           self$raw_data <- as_tibble(data)
-                          column_classes <- lapply(data, class)
-                          numeric_columns <- which(column_classes == "numeric")
-                          self$processed_data <- self$raw_data[, numeric_columns]
+                          self$filtered_data <- self$raw_data
+                        }
+                      },
+
+                      ## filter data - keep specific row indices
+                      filter = function(rows) {
+                        if (length(rows) > 0) {
+                          self$filtered_data <- self$raw_data[rows, ]
+                          private$invalidate()
                         }
                       },
 
@@ -43,8 +50,19 @@ Analysis <- R6Class("Analysis",
                       # ncp - number of dimensions kept in the results
                       # scale.unit - if TRUE then data are scaled to unit variance
                       pca = function(ncp = 5, scale.unit = TRUE) {
-                        if (!is.null(self$processed_data)) {
-                          pca <- FactoMineR::PCA(X = self$processed_data,
+                        if (!is.null(self$filtered_data)) {
+
+                          ## extract numeric columns only
+                          col_classes <- sapply(self$filtered_data, class)
+                          col_remove <- which(!col_classes %in% c("numeric", "integer"))
+                          if (length(col_remove) > 0) {
+                            data <- self$filtered_data[, -col_remove]
+                          } else {
+                            data <- self$filtered_data
+                          }
+
+                          ## PCA
+                          pca <- FactoMineR::PCA(X = data,
                                                  ncp = ncp,
                                                  scale.unit = scale.unit,
                                                  graph = FALSE)

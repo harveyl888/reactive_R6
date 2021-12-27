@@ -1,4 +1,5 @@
 library(shiny)
+library(DT)
 
 data <- iris
 
@@ -14,7 +15,10 @@ server <- function(input, output, session) {
   )
 
   observe({
-    rv$analysis <- Analysis$new(data)$reactive()
+    analysis <- Analysis$new(data)
+    analysis$pca()
+    analysis$cluster()
+    rv$analysis <- analysis$reactive()
   })
 
   analyze("analyze", analysis = rv$analysis)
