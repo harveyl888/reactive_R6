@@ -4,7 +4,7 @@ library(DT)
 data <- iris
 
 source("./class.R")
-source("./mod_analyze.R")
+source("./mod_data.R")
 source("./mod_multivariate.R")
 source("./mod_cluster.R")
 
@@ -21,7 +21,7 @@ server <- function(input, output, session) {
     rv$analysis <- analysis$reactive()
   })
 
-  analyze("analyze", analysis = rv$analysis)
+  data("data", analysis = rv$analysis)
   multivariate("multivariate", analysis = rv$analysis)
   cluster("cluster", analysis = rv$analysis)
 
@@ -29,8 +29,8 @@ server <- function(input, output, session) {
 
 ui <- navbarPage(
   title = "R6 Shiny Example",
-  tabPanel("Analyze",
-           analyze_ui("analyze")),
+  tabPanel("Data",
+           data_ui("data")),
   tabPanel("Multivariate Analysis",
            multivariate_ui("multivariate")),
   tabPanel("Clustering",

@@ -1,9 +1,9 @@
-analyze_ui <- function(id) {
+data_ui <- function(id) {
   ns <- NS(id)
-  uiOutput(ns("analyze_ui"))
+  uiOutput(ns("data_ui"))
 }
 
-analyze <- function(id, analysis = NULL) {
+data <- function(id, analysis = NULL) {
 
   moduleServer(
     id,
@@ -11,11 +11,8 @@ analyze <- function(id, analysis = NULL) {
 
       ns <- session$ns
 
-      output$analyze_ui <- renderUI({
+      output$data_ui <- renderUI({
         tagList(
-          fluidRow(
-            column(6, actionButton(ns("but_run"), "Run Analysis"))
-          ),
           fluidRow(
             column(12, DTOutput(ns("tab_data")))
           )
