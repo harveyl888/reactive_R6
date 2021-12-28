@@ -2,6 +2,7 @@ cluster_ui <- function(id) {
   ns <- NS(id)
   tagList(
     fluidRow(
+      column(6, selectizeInput(ns("sel_optim_method"), "Optimal Cluster Method", choices = c("silhouette", "wss", "gap_stat"))),
       column(6, uiOutput(ns("cluster_num_ui")))
     ),
     hr(),
@@ -43,8 +44,8 @@ cluster <- function(id, analysis = NULL) {
 
       ## plot - optimal number of clusters
       output$plt_optimal_clusters <- renderPlot({
-        req(cluster())
-        fviz_nbclust(coord(), k.max = 10, method = "wss", FUNcluster = kmeans)
+        req(cluster(), input$sel_optim_method)
+        fviz_nbclust(coord(), k.max = 10, method = input$sel_optim_method, nboot = 50, FUNcluster = kmeans, print.summary = FALSE, verbose = FALSE)
       })
 
       ## plot - clusters
